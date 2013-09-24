@@ -8,7 +8,12 @@ def compressWord(word):
 	sword = ""
 	for i, syn in enumerate(wn.synsets(word, None)):
 		syns = [n.replace('_', ' ') for n in syn.lemma_names]
+
+		if not syns[0] == word:
+			continue
+
 		for s in syns:
+			
 			if len(s) < leng:
 				sword = s
 				leng = len(sword)
