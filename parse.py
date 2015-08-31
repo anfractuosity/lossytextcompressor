@@ -7,20 +7,21 @@ import sys
 
 
 def compressWord(word):
-	leng = len(word)
-	sword = word
+  leng = len(word)
+  sword = word
+  synsets = wn.synsets(word)
 
-	for i, syn in enumerate(wn.synsets(word)):
-		syns = [n.name().replace('_', ' ') for n in syn.lemmas()]
+  for i, syn in enumerate(synsets):
+    syns = [n.name().replace('_', ' ') for n in syn.lemmas()]
 
-		if not syns[0] == word:
-			continue
+    if not syns[0] in [word, wn.morphy(word)]:
+      continue
 
-		for s in syns:
-			if len(s) < leng:
-				sword = s
-				leng = len(sword)
-	return sword
+    for s in syns:
+      if len(s) < leng:
+        sword = s
+        leng = len(sword)
+  return sword
 
 def compressFile(filename):
 	out = open(filename).read() 
@@ -28,11 +29,12 @@ def compressFile(filename):
 
 	words = nltk.tokenize.RegexpTokenizer("(?:[A-Z][.])+|\d[\d,.:\-/\d]*\d|\w+[\w\-\'.&|@:/]*\w+|\s|.|,|'|\"", False).tokenize(out)
 	for w in words:
-		c = compressWord(w)
-		if c == None:
-			output += w
-		else: 
-			output += c
+		if w:
+				c = compressWord(w)
+				if c == None:
+					output += w
+				else: 
+					output += c
 
 	return (output)
 
